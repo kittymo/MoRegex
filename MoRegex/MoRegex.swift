@@ -20,7 +20,7 @@ class MoRegex {
             return nil
         }
     }
-
+/*
     func match2(_ input: String, template: String) -> String? {
         let range = NSRange(location: 0, length: input.characters.count)
         let trimmedString = self.internalExpression?.stringByReplacingMatches(in: input, options: .reportProgress, range:range, withTemplate:template)
@@ -29,7 +29,7 @@ class MoRegex {
         }
         return nil
     }
-
+*/
     func match(_ input: String, replaces: [String?]? = nil) -> [String]? {
         //print("test input=\(input)")
         
