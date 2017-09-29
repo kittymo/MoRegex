@@ -9,13 +9,26 @@
 import Foundation
 
 class MoRegex {
-    var internalExpression: NSRegularExpression? = nil
+    var internalRE: NSRegularExpression
     var pattern: String? = nil
+
+    enum Check: String {
+        case mail = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
+        case url = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)\\/?$"
+        case date = "(\\d{4}|\\d{2})-(1[0-2]|0?[1-9])-([12][0-9]|3[01]|0?[1-9])"
+        case time = "(1|0?[0-9]|2[0-3]):([0-5][0-9]):?([0-5][0-9])?"
+        case telphone = "(0\\d)\\-?(\\d{4})\\-?(\\d{4})"
+        case mobile = "(09\\d\\d)\\-?(\\d{3})\\-?(\\d{3})"
+        case htmlTag = "^<([a-z]+)([^<]+)*(?:>(.*)<\\/\\1>|\\s+\\/>)$"
+        case colorHex = "^#?([a-f0-9]{6}|[a-f0-9]{3})$"
+        case number = "^[0-9-]+$"
+    }
     
-    init?(_ pattern: String) {
+
+    init?(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) {
         self.pattern = pattern
         do {
-            self.internalExpression = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+            self.internalRE = try NSRegularExpression(pattern: pattern, options: options)
         } catch {
             return nil
         }
@@ -36,51 +49,54 @@ class MoRegex {
         let range = NSRange(location: 0, length: input.characters.count)
         //let trimmedString = self.internalExpression?.stringByReplacingMatches(in: input, options: .reportProgress, range:range, withTemplate:"$1")
         
-        if let matches = self.internalExpression?.matches(in: input, options: .reportProgress, range: range) {
-            if matches.count == 0 {
-                return nil
-            }
-            var splits: [String] = []
-            var arr: [String] = []
-            if let n = self.internalExpression?.numberOfCaptureGroups {
-                for m in matches {
-                    var oldR: NSRange = NSMakeRange(0, 0)
-                    for i in 0...n {
-                        let r = m.range(at: i)
-                        let capture = (input as NSString).substring(with: r)
-                        if i > 0 {
-                            let start = oldR.location + oldR.length
-                            let r2 = NSMakeRange(start, r.location - start)
-                            splits.append((input as NSString).substring(with: r2))
-                            oldR = r
-                        }
-                        arr.append(capture)
-                    }
-                }
-                if (n + 1) != arr.count {
-                    return nil
-                }
-                if arr.count > 0 && splits.count > 0, let rs = replaces, rs.count > 0 {
-                    var output = ""
-                    for i in 0..<splits.count {
-                        output += splits[i]
-                        if i < rs.count, let rs = rs[i] {
-                            output += rs
-                        } else if i+1 < arr.count {
-                            output += arr[i+1]
-                        }
-                    }
-                    arr[0] = output
-                }
-            }
-            return arr
+        let matches = self.internalRE.matches(in: input, options: .reportProgress, range: range)
+        if matches.count == 0 {
+            return nil
         }
-        return nil
+        var splits: [String] = []
+        var arr: [String] = []
+        let n = self.internalRE.numberOfCaptureGroups
+        for m in matches {
+            var oldR: NSRange = NSMakeRange(0, 0)
+            for i in 0...n {
+                let r = m.range(at: i)
+                if r.location == NSNotFound {
+                    arr.append("")
+                    continue
+                }
+                let capture = (input as NSString).substring(with: r)
+                if i > 0 {
+                    let start = oldR.location + oldR.length
+                    let r2 = NSMakeRange(start, r.location - start)
+                    if r2.location != NSNotFound && r2.length >= 0 {
+                        splits.append((input as NSString).substring(with: r2))
+                    }
+                    oldR = r
+                }
+                arr.append(capture)
+            }
+        }
+        if (n + 1) != arr.count {
+            return nil
+        }
+        if arr.count > 0 && splits.count > 0, let rs = replaces, rs.count > 0 {
+            var output = ""
+            for i in 0..<splits.count {
+                output += splits[i]
+                if i < rs.count, let rs = rs[i] {
+                    output += rs
+                } else if i+1 < arr.count {
+                    output += arr[i+1]
+                }
+            }
+            arr[0] = output
+        }
+        return arr
     }
     
     func replace(_ input: String, template: String) -> String? {
         let range = NSRange(location: 0, length: input.characters.count)
-        let trimmedString = self.internalExpression?.stringByReplacingMatches(in: input, options: .reportProgress, range: range, withTemplate: template)
+        let trimmedString = self.internalRE.stringByReplacingMatches(in: input, options: .reportProgress, range: range, withTemplate: template)
         return trimmedString
     }
 }
@@ -100,17 +116,28 @@ func =~ (input: String?, pattern: String) -> [String]? {
 }
 
 extension String {
-    func regexMatch(_ pattern: String) -> [String]? {
-        return MoRegex(pattern)?.match(self)
+    func regexMatch(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
+        return MoRegex(pattern, options: options)?.match(self)
+    }
+
+    func regexMatch(check: MoRegex.Check) -> [String]? {
+        return MoRegex(check.rawValue)?.match(self)
+    }
+
+    func regexCheck(_ check: MoRegex.Check) -> [String]? {
+        return MoRegex(check.rawValue)?.match(self)
     }
     
-    func regexReplace(_ pattern: String, template: String) -> String? {
-        return MoRegex(pattern)?.replace(self, template: template)
+    func regexReplace(_ pattern: String, template: String, options: NSRegularExpression.Options = .caseInsensitive) -> String? {
+        return MoRegex(pattern, options: options)?.replace(self, template: template)
     }
     
-    func regexMatchSub(_ pattern: String, replaces: [String?]?) -> [String]? {
-        return MoRegex(pattern)?.match(self, replaces: replaces)
+    func regexMatchSub(_ pattern: String, replaces: [String?]?, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
+        return MoRegex(pattern, options: options)?.match(self, replaces: replaces)
     }
     
 }
+
+
+
 
