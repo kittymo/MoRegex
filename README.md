@@ -88,6 +88,7 @@ if let res = str1 =~ "\\-(.*+)" {
 regexMatch 的功能與 =~ 運算子相同
 
 ```swift
+let str1 = "02-12345678"
 if let res = str1.regexMatch("(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)") {
     // PRINT: res=["02-12345678", "02", "1234", "5678"]
 }
@@ -98,6 +99,7 @@ if let res = str1.regexMatch("(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)") {
 regexReplace 可以讓你以樣板字串的方式重新組合取出的字串
 
 ```swift
+let str1 = "02-12345678"
 if let res = str1.regexReplace("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", template: "($1)$2-$3") {
     // PRINT: res=(02)1234-5678
 }
@@ -108,11 +110,14 @@ if let res = str1.regexReplace("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", template: "($1
 regexMatchSub 允許你傳入一個字串陣列, 並依順序替換掉已匹配的字串
 
 ```swift
+let str1 = "02-12345678"
 if let res = str1.regexMatchSub("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", replaces: ["AB", nil, "CDE"]) {
     // PRINT: res=["AB-1234CDE", "02", "1234", "5678"]
     // res[0] "AB-1234CDE" 是替換後的結果
 }
 ```
+將傳入的 "02-12345678" 經過匹配替換後變成 "AB-1234CDE"
+
 
 ## 5. 檢查一些常用的判斷式
 
