@@ -173,8 +173,10 @@ MoRegex 是封裝 iOS 的 NSRegularExpression 函數, 因此也能傳入 NSRegul
 
 ```swift
 let str8 = "My name is Kitty"
-if let res = str8.regexMatch("kitty") {   // 預設文字比對為不區分大小寫
-    // PRINT: res=["Kitty"]
+
+// 若沒加 options 參數, 則預設文字比對為不區分大小寫 options: [.caseInsensitive]
+if let res = str8.regexMatch("kitty") {
+    // PRINT: res=["Kitty"]
 }
 
 if let res = str8.regexMatch("kitty", options: []) {   // 區分大小寫
