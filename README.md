@@ -10,6 +10,9 @@ MoRegex 讓你輕鬆的在 Swift 裡使用正規表示式(Regular Expression)
 iOS 原生的正規表示式並不友善, 我們經常只想做一些簡單的字串判斷, 但需要很多程式碼才能完成,
 MoRegex 把這些繁瑣的程式碼封裝成一個簡易使用的運算子(Operator)判斷式, 
 讓您只需要一行程式就可以做簡單的正規表示式判斷(Regular Expressions Matches)</br>
+</br>
+比如我們 UI 上有一個輸入格, 讓使用者輸入 email, 我們必須檢查使用者輸入的是不是正確的 email 格式</br>
+</br>
 例如:
 
 ```swift
@@ -17,7 +20,13 @@ let str1 = "02-12345678"
 if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d\\d\\d\\d\\d)" {
   print("1 res=\(res)")
   // PRINT: 1 res=["02-12345678", "02", "12345678"]
- }
+}
+ 
+let str2 = "hello-kitty@mail.com"
+if let res = str2.regexMatch(check: .mail) {        // 電子郵件
+    // PRINT: res=["hello-kitty@mail.com", "hello-kitty", "mail", "com"]
+}
+
 ```
 
 對 String 使用 =~ 運算子操作, 會回傳一個匹配的陣列, 如果匹配失敗會回傳 nil
