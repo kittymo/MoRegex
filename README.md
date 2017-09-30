@@ -35,5 +35,26 @@ if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d\\d\\d\\d\\d)" {
 - 指定匹配欄位替換字串
 - 內含簡易的常用判斷式
 
+## 如何安裝 使用CocoaPods (iOS 9+, OS X 10.10+)
+
+你可以使用 [CocoaPods](http://cocoapods.org/) 來安裝, 把`MoRegex`加到你的`Podfile`:
+
+```ruby
+platform :ios, '9.0'
+use_frameworks!
+
+target 'MyApp' do
+	pod 'MoRegex'
+end
+```
+
+## 如何安裝 手動Manually
+
+1. 下載本套件的 [MoRegex.swift](https://github.com/kittymo/MoRegex/blob/master/MoRegex/MoRegex.swift) 檔
+2. 把這個檔案加進你的 xcode 專案裡
+3. 安裝完成了
+
+
+## 如何使用 Usage
 
 
