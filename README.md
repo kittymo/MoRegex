@@ -60,33 +60,131 @@ end
 
 ```swift
 let str1 = "02-12345678"    // 想判斷的字串
-       
+
+// 取出前後2組字串
 if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d\\d\\d\\d\\d)" {
     // PRINT: res=["02-12345678", "02", "12345678"]
 }
 
+// 取出3組字串
 if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)" {
     // PRINT: res=["02-12345678", "02", "1234", "5678"]
 }
 
+// 判斷是否含有 12345
 if let res = str1 =~ "12345" {
     // PRINT: res=["12345"]
 }
 
+// 取出 - 符號後的字串
 if let res = str1 =~ "\\-(.*+)" {
     // PRINT: res=["-12345678", "12345678"]
 }
 
+```
+
+## 2. 使用 regexMatch
+
+regexMatch 的功能與 =~ 運算子相同
+
+```swift
 if let res = str1.regexMatch("(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)") {
     // PRINT: res=["02-12345678", "02", "1234", "5678"]
 }
+```
 
+## 3. 使用 regexReplace
+
+regexReplace 可以讓你以樣板字串的方式重新組合取出的字串
+
+```swift
 if let res = str1.regexReplace("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", template: "($1)$2-$3") {
     // PRINT: res=(02)1234-5678
 }
+```
 
+## 4. 使用 regexMatchSub
+
+regexMatchSub 允許你傳入一個字串陣列, 並依順序替換掉已匹配的字串
+
+```swift
 if let res = str1.regexMatchSub("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", replaces: ["AB", nil, "CDE"]) {
     // PRINT: res=["AB-1234CDE", "02", "1234", "5678"]
+    // res[0] "AB-1234CDE" 是替換後的結果
 }
 ```
+
+## 5. 檢查一些常用的判斷式
+
+MoRegex 已經內建幾個常用的表示式, 您可以用更簡單的方式做這些常用的判斷
+
+```swift
+let str2 = "hello-kitty@mail.com"
+if let res = str2.regexMatch(check: .mail) {        // 電子郵件
+    // PRINT: res=["hello-kitty@mail.com", "hello-kitty", "mail", "com"]
+}
+
+let str3 = "2017-09-30"
+if let res = str3.regexMatch(check: .date) {        // 日期 年-月-日
+    // PRINT: res=["2017-09-30", "2017", "09", "30"]
+}
+
+let str4 = "02-12341234"
+if let res = str4.regexMatch(check: .telphone) {    // 市話
+    // PRINT: res=["02-12341234", "02", "1234", "1234"]
+}
+
+let str5 = "0901-123123"
+if let res = str5.regexMatch(check: .mobile) {      // 行動電話
+    // PRINT: res=["0901-123123", "0901", "123", "123"]
+}
+
+let str6 = "<center>TEST</center>"
+if let res = str6.regexMatch(check: .htmlTag) {     // HTML標籤
+    // PRINT: res=["<center>TEST</center>", "center", "", "TEST"]
+}
+
+let str7 = "21:05:43"
+if let res = str7.regexMatch(check: .time) {    // 時間(24小時制)
+    // PRINT: res=["21:05:43", "21", "05", "43"]
+}
+
+let str9 = "https://hello.kitty.com/index.html"
+if let res = str9.regexMatch(check: .url) {    // 網址
+    // PRINT: res=["https://hello.kitty.com/index.html", "https://", "hello.kitty", "com", ""]
+}
+
+let str10 = "#F390CC"
+if let res = str10.regexMatch(check: .colorHex) {    // 色碼
+    // PRINT: res=["#F390CC", "F390CC"]
+}
+
+let str11 = "-12345"
+if let res = str11.regexMatch(check: .number) {    // 整數數字
+    // PRINT: res=["-12345"]
+}
+
+```
+
+## 6. 可以加入參數選項
+
+MoRegex 是封裝 iOS 的 NSRegularExpression 函數, 因此也能傳入 NSRegularExpression 的 options 選項</br>
+以區分大小寫來做示範
+
+```swift
+let str8 = "My name is Kitty"
+if let res = str8.regexMatch("kitty") {   // 預設文字比對為不區分大小寫
+    // PRINT: res=["Kitty"]
+}
+
+if let res = str8.regexMatch("kitty", options: []) {   // 區分大小寫
+    // 因為匹配不成功, 這裡不會被執行
+} else {
+    // PRINT: NOT MATCH
+}
+
+```
+
+
+
 
