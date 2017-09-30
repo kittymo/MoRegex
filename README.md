@@ -166,6 +166,18 @@ if let res = str11.regexMatch(check: .number) {    // 整數數字
 
 ```
 
+上面的檢查範例也可以用 regexCheck 來完成
+
+```swift
+let str12 = "-12345"
+if let res = str12.regexCheck(.number) {    // 整數數字
+    print("res=\(res)")
+    // PRINT: res=["-12345"]
+}
+
+```
+
+
 ## 6. 可以加入參數選項
 
 MoRegex 是封裝 iOS 的 NSRegularExpression 函數, 因此也能傳入 NSRegularExpression 的 options 選項</br>
