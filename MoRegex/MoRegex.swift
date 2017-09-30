@@ -46,7 +46,11 @@ class MoRegex {
         for m in matches {
             var oldR: NSRange = NSMakeRange(0, 0)
             for i in 0...n {
+#if swift(>=4.0)
                 let r = m.range(at: i)
+#else
+                let r = m.rangeAt(i)
+#endif
                 if r.location == NSNotFound {
                     arr.append("")
                     continue

@@ -116,6 +116,12 @@ class ViewController: UIViewController {
             // PRINT: 18 res=["-12345"]
         }
         
+        let str12 = "-12345"
+        if let res = str12.regexCheck(.number) {    // 整數數字
+            print("res=\(res)")
+            // PRINT: res=["-12345"]
+        }
+
 
     }
 
