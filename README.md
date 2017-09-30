@@ -56,5 +56,37 @@ end
 
 
 ## 如何使用 Usage
+## 1. 使用 =~ 運算子
 
+```swift
+        let str1 = "02-12345678"	// 想判斷的字串
+        
+        if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d\\d\\d\\d\\d)" {
+            // PRINT: res=["02-12345678", "02", "12345678"]
+        }
+        
+        if let res = str1 =~ "(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)" {
+            // PRINT: res=["02-12345678", "02", "1234", "5678"]
+        }
+        
+        if let res = str1 =~ "12345" {
+            // PRINT: res=["12345"]
+        }
+        
+        if let res = str1 =~ "\\-(.*+)" {
+            // PRINT: res=["-12345678", "12345678"]
+        }
+        
+        if let res = str1.regexMatch("(\\d\\d)\\-(\\d\\d\\d\\d)(\\d\\d\\d\\d)") {
+            // PRINT: res=["02-12345678", "02", "1234", "5678"]
+        }
+        
+        if let res = str1.regexReplace("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", template: "($1)$2-$3") {
+            // PRINT: res=(02)1234-5678
+        }
+        
+        if let res = str1.regexMatchSub("(\\d\\d)\\-(\\d\\d\\d\\d)(....)", replaces: ["AB", nil, "CDE"]) {
+            // PRINT: res=["AB-1234CDE", "02", "1234", "5678"]
+        }
+```
 
