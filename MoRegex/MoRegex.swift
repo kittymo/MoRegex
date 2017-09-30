@@ -2,7 +2,7 @@
 //  MoRegex.swift
 //  MoRegex
 //
-//  Created by Hello Kitty on 2017/3/25.
+//  Created by Hello Kitty on 2017/9/30.
 //  Copyright © 2017年 Hello Kitty. All rights reserved.
 //
 
@@ -33,22 +33,9 @@ class MoRegex {
             return nil
         }
     }
-/*
-    func match2(_ input: String, template: String) -> String? {
-        let range = NSRange(location: 0, length: input.characters.count)
-        let trimmedString = self.internalExpression?.stringByReplacingMatches(in: input, options: .reportProgress, range:range, withTemplate:template)
-        if let ts = trimmedString, ts.characters.count > 0 {
-            return ts
-        }
-        return nil
-    }
-*/
+
     func match(_ input: String, replaces: [String?]? = nil) -> [String]? {
-        //print("test input=\(input)")
-        
         let range = NSRange(location: 0, length: input.characters.count)
-        //let trimmedString = self.internalExpression?.stringByReplacingMatches(in: input, options: .reportProgress, range:range, withTemplate:"$1")
-        
         let matches = self.internalRE.matches(in: input, options: .reportProgress, range: range)
         if matches.count == 0 {
             return nil
