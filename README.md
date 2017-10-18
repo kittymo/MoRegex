@@ -57,6 +57,22 @@ target 'MyApp' do
 end
 ```
 
+## 如何安裝 使用[Swift Package Manager](https://github.com/apple/swift-package-manager)
+
+你可以使用 [The Swift Package Manager](https://swift.org/package-manager) 來安裝, 在你的`Package.swift`加入`MoRegex`:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "YOUR_PROJECT_NAME",
+    targets: [],
+    dependencies: [
+        .Package(url: "https://github.com/kittymo/MoRegex.git", majorVersion: 1),
+    ]
+)
+```
+
 ## 如何安裝 手動Manually
 
 1. 下載本套件的 [MoRegex.swift](https://github.com/kittymo/MoRegex/blob/master/MoRegex/MoRegex.swift) 檔
