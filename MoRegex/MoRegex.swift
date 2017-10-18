@@ -8,11 +8,11 @@
 
 import Foundation
 
-class MoRegex {
+public class MoRegex {
     var internalRE: NSRegularExpression
     var pattern: String? = nil
 
-    enum Check: String {
+    public enum Check: String {
         case mail = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
         case url = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)\\/?$"
         case date = "(\\d{4}|\\d{2})-(1[0-2]|0?[1-9])-([12][0-9]|3[01]|0?[1-9])"
@@ -25,7 +25,7 @@ class MoRegex {
     }
     
 
-    init?(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) {
+    public init?(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) {
         self.pattern = pattern
         do {
             self.internalRE = try NSRegularExpression(pattern: pattern, options: options)
@@ -34,7 +34,7 @@ class MoRegex {
         }
     }
 
-    func match(_ input: String, replaces: [String?]? = nil) -> [String]? {
+    public func match(_ input: String, replaces: [String?]? = nil) -> [String]? {
         let range = NSRange(location: 0, length: input.characters.count)
         let matches = self.internalRE.matches(in: input, options: .reportProgress, range: range)
         if matches.count == 0 {
@@ -85,7 +85,7 @@ class MoRegex {
         return arr
     }
     
-    func replace(_ input: String, template: String) -> String? {
+    public func replace(_ input: String, template: String) -> String? {
         let range = NSRange(location: 0, length: input.characters.count)
         let trimmedString = self.internalRE.stringByReplacingMatches(in: input, options: .reportProgress, range: range, withTemplate: template)
         return trimmedString
@@ -99,7 +99,7 @@ precedencegroup RegexPrecedence {
 }
 
 infix operator =~ : RegexPrecedence
-func =~ (input: String?, pattern: String) -> [String]? {
+public func =~ (input: String?, pattern: String) -> [String]? {
     if input == nil {
         return nil
     }
@@ -107,23 +107,23 @@ func =~ (input: String?, pattern: String) -> [String]? {
 }
 
 extension String {
-    func regexMatch(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
+    public func regexMatch(_ pattern: String, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
         return MoRegex(pattern, options: options)?.match(self)
     }
 
-    func regexMatch(check: MoRegex.Check) -> [String]? {
+    public func regexMatch(check: MoRegex.Check) -> [String]? {
         return MoRegex(check.rawValue)?.match(self)
     }
 
-    func regexCheck(_ check: MoRegex.Check) -> [String]? {
+    public func regexCheck(_ check: MoRegex.Check) -> [String]? {
         return MoRegex(check.rawValue)?.match(self)
     }
     
-    func regexReplace(_ pattern: String, template: String, options: NSRegularExpression.Options = .caseInsensitive) -> String? {
+    public func regexReplace(_ pattern: String, template: String, options: NSRegularExpression.Options = .caseInsensitive) -> String? {
         return MoRegex(pattern, options: options)?.replace(self, template: template)
     }
     
-    func regexMatchSub(_ pattern: String, replaces: [String?]?, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
+    public func regexMatchSub(_ pattern: String, replaces: [String?]?, options: NSRegularExpression.Options = .caseInsensitive) -> [String]? {
         return MoRegex(pattern, options: options)?.match(self, replaces: replaces)
     }
     
